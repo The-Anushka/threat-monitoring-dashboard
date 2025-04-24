@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Threat Monitoring Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+        <h1>Threat Monitoring Dashboard</h1>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+
+    <label for="severityFilter">Filter by Severity:</label>
+    <select id="severityFilter">
+        <option value="All">All</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+    </select>
+    <button onclick="exportLogs()">📁 Export Logs</button>
+
+    <div class="chart-container">
+        <canvas id="threatChart"></canvas>
+    </div>
+
+    <div id="logs"></div>
+
+    <script>
+        function getSeverityColor(severity) {
+            switch (severity) {
+                case 'High': return '#ff4c4c';
+                case 'Medium': return '#ffcc00';
+                case 'Low': return '#4caf50';
+                default: return '#00ffff';
+            }
+        }
+
+        async function fetchLogs() {
+            const response = await fetch("/api/logs");
+            const data = await response.json();
+
+            const selectedSeverity = document.getElementById("severityFilter").value;
+            const filtered = data.filter(log => selectedSeverity === "All" || log.severity === selectedSeverity);
+
+            const container = document.getElementById("logs");
+            container.innerHTML = "";
+
+            const threatCounts = {};
+
+            filtered.forEach(log => {
+                const entry = document.createElement("p");
+                entry.textContent = `[${log.timestamp}] ${log.source_ip} → ${log.destination_ip} | ${log.threat_type} (${log.severity})`;
+                entry.style.borderLeft = `5px solid ${getSeverityColor(log.severity)}`;
+                container.appendChild(entry);
+
+                threatCounts[log.threat_type] = (threatCounts[log.threat_type] || 0) + 1;
+            });
+
+            updateChart(threatCounts);
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById("threatChart").getContext("2d");
+            if (window.chartInstance) {
+                window.chartInstance.destroy();
+            }
+            window.chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: 'Threat Type Count',
+                        data: Object.values(data),
+                        backgroundColor: '#4bc0c0'
+                    }]
+                }
+            });
+        }
+
+        function exportLogs() {
+            window.location.href = "/api/export";
+        }
+
+        document.getElementById("severityFilter").addEventListener("change", fetchLogs);
+        fetchLogs();
+        setInterval(fetchLogs, 5000);
+    </script>
+</body>
+</html>

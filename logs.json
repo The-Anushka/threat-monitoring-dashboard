@@ -1,0 +1,16 @@
+[
+    {
+        "timestamp": "2025-04-22 10:15:30",
+        "source_ip": "192.168.1.10",
+        "destination_ip": "10.0.0.5",
+        "threat_type": "Port Scan",
+        "severity": "Medium"
+    },
+    {
+        "timestamp": "2025-04-22 10:17:45",
+        "source_ip": "172.16.5.8",
+        "destination_ip": "10.0.0.20",
+        "threat_type": "SQL Injection",
+        "severity": "High"
+    }
+]

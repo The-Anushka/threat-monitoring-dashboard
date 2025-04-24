@@ -1,0 +1,55 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 20px;
+    background-color: #f4f8fb;
+    color: #333;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+}
+
+.logout {
+    margin-left: auto;
+    background: crimson;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+select, button {
+    padding: 8px;
+    margin: 10px 10px 10px 0;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+}
+
+#logs p {
+    padding: 10px;
+    background: white;
+    margin-bottom: 8px;
+    border-left: 5px solid #ccc;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    border-radius: 6px;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
