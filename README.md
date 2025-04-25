@@ -53,8 +53,7 @@ Credentials are customizable
 Login page is styled with modern UI for public presentation
 
 ✅ 6. Deployment
-Live and accessible on Render at:
-🌐 https://threat-watch-dashboard.onrender.com
+Live and accessible on Render 
 
 🔐 Security Concepts Simulated
 Log Analysis
