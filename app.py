@@ -39,19 +39,15 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
-        if request.form['username'] == 'admin' and request.form['password'] == 'admin123':
+        if request.form['username'] == 'admin' and request.form['password'] == 'password':
             session['logged_in'] = True
             return redirect(url_for('index'))
         else:
-            return "Wrong credentials"
-    return '''
-    <form method="post">
-        Username: <input name="username"><br>
-        Password: <input type="password" name="password"><br>
-        <input type="submit">
-    </form>
-    '''
+            error = "Wrong credentials"
+    return render_template("login.html", error=error)
+
 
 @app.route('/logout')
 def logout():
