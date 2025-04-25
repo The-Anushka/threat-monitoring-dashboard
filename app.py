@@ -1,9 +1,9 @@
 import random
 from datetime import datetime, timedelta
-from flask import Flask, jsonify, render_template, request, redirect, url_for, session, send_file
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, send_file, make_response
 import sqlite3
 import csv
-from io import StringIO
+import io
 
 app = Flask(__name__)
 app.secret_key = "secret123"  # For sessions
@@ -48,7 +48,6 @@ def login():
             error = "Wrong credentials"
     return render_template("login.html", error=error)
 
-
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
@@ -81,22 +80,22 @@ def export_logs():
     rows = c.fetchall()
     conn.close()
 
-    csvfile = StringIO()
-    writer = csv.writer(csvfile)
+    # Write CSV to memory using StringIO
+    output = io.StringIO()
+    writer = csv.writer(output)
     writer.writerow(["Timestamp", "Source IP", "Destination IP", "Threat Type", "Severity"])
     writer.writerows(rows)
 
-    csvfile.seek(0)
-    return send_file(
-        StringIO(csvfile.getvalue()),
-        mimetype='text/csv',
-        as_attachment=True,
-        download_name='threat_logs.csv'
-    )
+    # Return the CSV as a downloadable file
+    response = make_response(output.getvalue())
+    response.headers["Content-Disposition"] = "attachment; filename=threat_logs.csv"
+    response.headers["Content-type"] = "text/csv"
+    return response
 
 if __name__ == '__main__':
     init_db()
     generate_fake_logs()
     app.run(debug=True)
+
 
 
